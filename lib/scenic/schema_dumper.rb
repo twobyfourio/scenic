@@ -3,8 +3,21 @@ require "rails"
 module Scenic
   # @api private
   module SchemaDumper
+    # Total hack, but in Rails 5, Scenic is caching a different ActiveRecord::Base.connection
+    # than db:schema:load is using, so the views try to execute in a different connection
+    # inside the same transaction
+    def reconnect(stream)
+      stream.puts <<-CONNECT
+
+  Scenic.configure do |config|
+    config.database = Scenic::Adapters::Postgres.new(ActiveRecord::Base.connection)
+  end
+      CONNECT
+    end
+
     def tables(stream)
       super
+      reconnect(stream)
       views(stream)
     end
 
