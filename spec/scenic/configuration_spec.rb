@@ -20,6 +20,14 @@ module Scenic
       expect(Scenic.database).to eq adapter
     end
 
+    it "allows sorting views to be configured" do
+      Scenic.configure do |config|
+        config.sort = ->(a, b) { 0 }
+      end
+
+      expect(Scenic.database.views.sort).to eql []
+    end
+
     def restore_default_config
       Scenic.configuration = Configuration.new
     end

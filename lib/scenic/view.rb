@@ -33,6 +33,10 @@ module Scenic
       @materialized = materialized
     end
 
+    def <=>(other)
+      Scenic.configuration.sort.call(self, other)
+    end
+
     # @api private
     def ==(other)
       name == other.name &&

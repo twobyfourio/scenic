@@ -6,8 +6,18 @@ module Scenic
     # @return Scenic adapter
     attr_accessor :database
 
+    # The sorting algorithm to use when dumping the schema.
+    #
+    # Defaults to sorting by view name.
+    # Provide Scenic::Configuration::NO_SORT
+    # to apply as the database returns it.
+    attr_accessor :sort
+
+    NO_SORT = ->(a, b) { 0 }
+
     def initialize
       @database = Scenic::Adapters::Postgres.new
+      @sort     = ->(a, b) { a.name <=> b.name }
     end
   end
 
